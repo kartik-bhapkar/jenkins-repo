@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage('PULL') {
+            steps {
+                git 'https://github.com/kartik-bhapkar/student-app-deployment-and-monitoring.git'
+            }
+        }
+
+        stage('BUILD') {
+            steps {
+                sh '''cd backend
+                mvn clean package -DskipTests'''
+            }
+        }
+
+        stage('TEST') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+
+        stage('DEPLOY') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
