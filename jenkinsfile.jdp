@@ -3,26 +3,43 @@ pipeline {
     stages {
         stage('PULL') {
             steps {
-                git 'https://github.com/kartik-bhapkar/student-app-deployment-and-monitoring.git'
+                git branch: 'devops', url: 'https://github.com/jambhulkarcloudblitz-alt/CDEC-studentapp.git'
             }
         }
-
         stage('BUILD') {
             steps {
                 sh '''cd backend
-                mvn clean package -DskipTests'''
+                    mvn clean package -DskipTests'''
             }
         }
-
-        stage('TEST') {
+        // stage('TEST') {
+        //     steps {
+        //         sh '''cd backend
+        //           mvn sonar:sonar \
+        //             -Dsonar.projectKey=studentapp \
+        //             -Dsonar.projectName='studentapp' \
+        //             -Dsonar.host.url=http://16.16.144.25:9000 \
+        //             -Dsonar.token=sqp_d9c2d4f479deade08a49fd3a5da678a050098336'''
+        //     }
+        // }
+        stage ('TEST') {
             steps {
-                echo 'Hello World'
+                withSonarQubeEnv(installationName: 'sonarqube' , credentialsId: 'sonar-cred') {
+                   sh '''cd backend
+                    mvn sonar:sonar -Dsonar.projectKey=studentapp'''
+                }
             }
         }
-
+        stage ('Quality-Gate') {
+            steps {
+                timeout(10) {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar-cred'
+                }
+        }
+        }
         stage('DEPLOY') {
             steps {
-                echo 'Hello World'
+                echo 'DEPLOY SUCCSESS'
             }
         }
     }
