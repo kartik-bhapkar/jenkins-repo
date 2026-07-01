@@ -17,7 +17,7 @@ pipeline {
                 withSonarQubeEnv(installationName:'sonarqube', credentialsId: 'sonar-cred') {
                     sh '''cd backend
                           mvn sonar:sonar \
-                          -Dsonar.projectKey=jenkins
+                          -Dsonar.projectKey=jenkins'''
             }
          }
         stage ('Quality-Gate') {
