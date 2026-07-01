@@ -12,21 +12,20 @@ pipeline {
                     mvn clean package -DskipTests'''
             }
         }
-         stage('TEST') {
-             steps {
-                withSonarQubeEnv(installationName:'sonarqube', credentialsId: 'sonar-cred') {
-                    sh '''cd backend
-                          mvn sonar:sonar \
-                          -Dsonar.projectKey=jenkins'''
+         stage ('TEST') {
+            steps {
+                withSonarQubeEnv(installationName: 'sonarqube' , credentialsId: 'sonar-cred') {
+                   sh '''cd backend
+                    mvn sonar:sonar -Dsonar.projectKey=jenkins'''
                 }
             }
-         }
+        }
         stage ('Quality-Gate') {
             steps {
                 timeout(10) {
                     waitForQualityGate abortPipeline: true, credentialsId: 'sonar-cred'
                 }
-        }
+            }
         }
         stage('DEPLOY') {
             steps {
