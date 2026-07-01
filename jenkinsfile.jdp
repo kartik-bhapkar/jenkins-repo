@@ -18,6 +18,7 @@ pipeline {
                     sh '''cd backend
                           mvn sonar:sonar \
                           -Dsonar.projectKey=jenkins'''
+                }
             }
          }
         stage ('Quality-Gate') {
